@@ -18,14 +18,20 @@ typedef struct funcionario {
     struct funcionario *proximo;
 } Funcionario;
 
-int main() {
-    int i;
-    Funcionario *primeiro;
+void imprime_lista(Funcionario *lista) {
     Funcionario *aux;
+    for (aux=lista; aux != NULL; aux=aux->proximo) {
+        printf("Registro:\n\t id: %d, \n\t nome: %s, \n\t nasc: %d/%d/%d, \n\t salario: %lf\n\n",
+                aux->id, aux->nome, aux->nascimento.dia, 
+                aux->nascimento.mes, aux->nascimento.ano, aux->salario);    
+    }
+}
+
+int main() {
+    Funcionario *primeiro, *segundo;
 
     primeiro = malloc(sizeof(Funcionario));
-
-    primeiro->id = 0;
+    primeiro->id = 1;
     snprintf(primeiro->nome, sizeof(primeiro->nome), "%s", "Luiz Dendena");
     primeiro->salario = 2100.00;
     primeiro->nascimento.dia = 25;
@@ -33,32 +39,21 @@ int main() {
     primeiro->nascimento.ano = 1997;
     primeiro->proximo = NULL;
 
-    for (i=0; i<3; i++) {
-        Funcionario *aux;
-        aux = malloc(sizeof(Funcionario));
+    segundo = malloc(sizeof(Funcionario));
+    segundo->id = 2;
+    snprintf(segundo->nome, sizeof(segundo->nome), "%s", "Luiz Roberto");
+    segundo->salario = 1800.00;
+    segundo->nascimento.dia = 2;
+    segundo->nascimento.mes = 12;
+    segundo->nascimento.ano = 1999;
+    segundo->proximo = NULL;
 
-        aux->id = (i+1);
-        snprintf(primeiro->nome, sizeof(primeiro->nome), "%s", "Luiz Dendena");
-        aux->salario = 2100.00;
-        aux->nascimento.dia = 25;
-        aux->nascimento.mes = 8;
-        aux->nascimento.ano = 1997;
-        aux->proximo = NULL;
-        
-        if (primeiro) {
-            aux->proximo = primeiro;
-            primeiro = aux;
-        }
-    }
+    primeiro->proximo = segundo;
 
-    for (aux=primeiro; aux != NULL; aux=aux->proximo) {
-        printf("Id do funcionário: %d\n", aux->id);
-        printf("Nome: %s\n", aux->nome);
-        printf("Salário: %.2lf\n\n\n", aux->salario);
-    }
+    imprime_lista(primeiro);
 
     free(primeiro);
-    free(aux);
+    free(segundo);
 
     return 0;
 }

@@ -2,43 +2,83 @@
 #include <stdlib.h>
 
 typedef struct lista_int {
-    int n;
-    struct lista_int *proximo;
+    int valor;
+    struct lista *proximo;
 } ListaInt;
 
-ListaInt* constroi_lista(int n, int *v) {
-    int i;
-    ListaInt *vetor_lista, *aux;
-
-    vetor_lista = malloc(sizeof(ListaInt));
-    vetor_lista->n = v[3];
-    vetor_lista->proximo = NULL;
-
-    for (i=2; i>=0; i--) {
-        aux = malloc(sizeof(ListaInt));
-
-        aux->n = v[i];
-        aux->proximo = NULL;
-
-        if (vetor_lista) {
-            aux->proximo = vetor_lista;
-            vetor_lista = aux;
-        }
+void imprime_lista(ListaInt *lista) {
+    ListaInt *aux;
+    if (lista == NULL) {
+        printf("Lista vazia\n");
+        return;
     }
-    return vetor_lista;
+    for (aux=lista; aux != NULL; aux=aux->proximo) {
+        printf("Valor:%d ", aux->valor);
+    }
+}
+
+ListaInt* constroi_lista(int n, int *v) {
+    /*Vamos utilizar o ultimo para encadear os elementos na forma correta.
+    Uma opção seria encadear tudo com o primeiro, mas andando na lista de tras para frente.*/
+    ListaInt *primeiro, *ultimo, *aux;
+    int i;
+    primeiro = malloc(sizeof(ListaInt));
+    primeiro->valor = v[0];
+    primeiro->proximo = NULL;
+    ultimo = primeiro;
+
+    for (i=1; i<n; i++) {
+        aux = malloc(sizeof(ListaInt));
+        aux->valor = v[i];
+        aux->proximo = NULL;
+        // Faz o encademamento do novo elemento no fim da lista
+        ultimo->proximo = aux;
+        ultimo = aux; // Torna o novo elemento (aux) o último
+    }
+
+/* Faz a mesma coisa mais sem usar o aux
+    for (i=1, i<n; i++) {
+        ultimo->proximo = malloc(sizeof(ListaInt));
+        ultimo = ultimo->proximo;
+
+        ultimo->valor = v[i];
+        ultimo->proximo = NULL;
+    } */
+
+    return primeiro;
+}
+
+void limpa_toda_lista(ListaInt *primeiro) {
+    ListaInt *aux;
+    while (primeiro != NULL) {
+        aux = primeiro;
+        primeiro = primeiro->proximo;
+        free(aux);
+    }
 }
 
 int main() {
-    int v[4] = {1, 21, 4, 6};
-    ListaInt *vetor_lista, *aux;
+    ListaInt *primeiro = NULL;
+    int i, n, *vet;
 
-    vetor_lista = malloc(sizeof(ListaInt));
-    vetor_lista = constroi_lista(4, v);
+    printf("Digite o número de valores: ");
+    scanf("%d", &n);
 
-    for (aux=vetor_lista; aux != NULL; aux=aux->proximo) {
-        printf("%d\n", aux->n);
+    vet = malloc(sizeof(int)*n); // Aloca vetor dinâmicamente
+    printf("\nDigite todos os valores separados por ',' sem espaços. (Ex: 1,2,3)\n");
+
+    for (i=0; i<n; i++) {
+        scanf("%d", &vet[i]);
     }
 
-    free(vetor_lista);
+    primeiro = constroi_lista(n , vet);
+
+    imprime_lista(primeiro);
+    
+    limpa_toda_lista(primeiro);
+    free(vet);
+
+    printf("\nTerminamos\n");
+
     return 0;
 }
