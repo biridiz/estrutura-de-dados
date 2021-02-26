@@ -59,6 +59,23 @@ void printPosOrder(Node *root) {
     }
 }
 
+int heightTree(Node *root) {
+    int heigth, left, right;
+
+    if (root == NULL)
+        return 0;
+
+    left = heightTree(root->left);
+    right = heightTree(root->rigth);
+
+    if (left >= right)
+        heigth = left;
+    else
+        heigth = right;
+    
+    return heigth + 1;
+}
+
 void freeTree(Node *root) {
     if (root == NULL)
         return;
@@ -104,6 +121,7 @@ int main() {
 
             scanf("%d", &op);
             if (op == 6) {
+                printf("Altura: %d\n", heightTree(root));
                 freeTree(root);
                 printf("\n");
             }
